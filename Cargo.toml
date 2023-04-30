@@ -1,0 +1,15 @@
+[package]
+name = "open-home-api"
+version = "0.0.0"
+edition = "2021"
+
+authors = ["Kylian Lichtensteiger <f5cbd9e6@srylax.dev>"]
+license = "AGPL-3.0-or-later"
+keywords = ["open-home-api","open-home"]
+homepage = "https://github.com/open-home-dev/open-home-api"
+repository = "https://github.com/open-home-dev/open-home-api.git"
+description = "Placeholder for the Open-Home API - currently in Development"
+readme = "README.md"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
