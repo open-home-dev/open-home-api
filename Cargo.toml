@@ -7,9 +7,8 @@ authors = ["Kylian Lichtensteiger <f5cbd9e6@srylax.dev>"]
 license = "AGPL-3.0-or-later"
 keywords = ["open-home-api","open-home"]
 homepage = "https://github.com/open-home-dev/open-home-api"
-repository = "https://github.com/open-home-dev/open-home-api.git"
+repository = "https://github.com/open-home-dev/open-home-api"
 description = "Placeholder for the Open-Home API - currently in Development"
 readme = "README.md"
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
