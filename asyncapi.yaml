@@ -1,0 +1,155 @@
+asyncapi: 2.6.0
+info:
+  title: Open-Home Message Broker
+  version: 1.0.0
+  description: >
+    The goal of the Open-Home Message Broker is to allow you to control many
+    diffrent Smart-Home Applications/Devices.
+
+
+    Currently Supported Devices:
+      - Open-Home Ambient
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+servers:
+  self:
+    url: ipOfYourOpen-HomeHub:1883
+    protocol: mqtt
+defaultContentType: application/json
+channels:
+  open-home/ambient:
+    description: >-
+      The topic on which all Payloads for the open-home ambient Product get
+      exchanged.
+    publish:
+      summary: Inform about Device Metadata.
+      message:
+        $ref: '#/components/messages/AmbientResponse'
+    subscribe:
+      summary: Receive Control Request
+      message:
+        $ref: '#/components/messages/AmbientRequest'
+components:
+  messages:
+    AmbientResponse:
+      name: AmbientResponse
+      title: Ambient Response
+      summary: Metadata about the Ambient Light. Does not include current status.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AmbientResponsePayload'
+    AmbientRequest:
+      name: AmbientRequest
+      title: Ambient Request
+      summary: Available Controls for the Ambient Light
+      payload:
+        $ref: '#/components/schemas/AmbientRequestPayload'
+  schemas:
+    AmbientResponsePayload:
+      oneOf:
+        - $ref: '#/components/schemas/DeviceInformation'
+    DeviceInformation:
+      type: object
+      properties:
+        DeviceInformation:
+          type: object
+          properties:
+            device_name:
+              type: string
+              description: Product name
+              example: Ambient Light
+            device_id:
+              type: string
+              description: Single Identifier for this Product - Serial Number
+              example: 246703615349
+            device_version:
+              type: string
+              description: >-
+                Protocoll Version of the Device - Used to see if devices are
+                compatible
+              examples:
+                - 1.1
+                - 2
+          required:
+            - device_name
+            - device_id
+            - device_version
+      required:
+        - DeviceInformation
+    AmbientRequestPayload:
+      oneOf:
+        - $ref: '#/components/schemas/SetColor'
+        - $ref: '#/components/schemas/GetDeviceInformation'
+    SetColor:
+      type: object
+      properties:
+        SetColor:
+          type: object
+          properties:
+            color:
+              $ref: '#/components/schemas/ColorControl'
+              description: Used to control the LED
+            selection:
+              oneOf:
+                - $ref: '#/components/schemas/SingleSelectionControl'
+                - $ref: '#/components/schemas/MultipleSelectionControl'
+                - $ref: '#/components/schemas/AllSelectionControl'
+          required:
+            - color
+            - selection
+      required:
+        - SetColor
+    ColorControl:
+      type: object
+      properties:
+        colors:
+          type: array
+          description: RGB Colors for the LED
+          examples:
+            - - 255
+              - 255
+              - 255
+            - - 0
+        fill_mode:
+          description: >-
+            If you have 50 LEDs and you send [0] with Repeate, every LED gets
+            turned off. If you send [0] with Fit, only the first LED gets turned
+            off
+          enum:
+            - Repeat
+            - Fit
+      required:
+        - colors
+        - fill_mode
+    SingleSelectionControl:
+      type: object
+      properties:
+        Single:
+          type: string
+          description: Used to control a single Light
+          example: '246703615349'
+      required:
+        - Single
+    MultipleSelectionControl:
+      type: object
+      properties:
+        Multiple:
+          type: array
+          description: Used to control multiple Lights
+          example:
+            - '246703615349'
+            - '246703615350'
+      required:
+        - Multiple
+    AllSelectionControl:
+      type: string
+      enum:
+        - All
+    GetDeviceInformation:
+      type: string
+      enum:
+        - GetDeviceInformation
+      description: >-
+        Request all Lights to send Information about themself. Each Light which
+        receives this message must respond with an AmbientResponse
